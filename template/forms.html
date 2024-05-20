@@ -107,7 +107,7 @@
                                                         class="input-group-text">Target(s):</label>
                                                     <input type="text" id="ipRangeInput" name="ip_range"
                                                         class="form-control" placeholder="Example: 192.168.0.1-100">
-                                                    <button type="submit" class="btn btn-primary"><i
+                                                    <button onclick="run()" class="btn btn-primary"><i
                                                             class="fas fa-bolt"></i></button>
                                                 </div>
                                             </div>
@@ -180,10 +180,10 @@
                                             <div class="col-md-4">
                                                 <div class="card">
                                                     <div class="card-header">
-                                                        WAN Distribution
+                                                        DISK Distribution
                                                     </div>
                                                     <div class="card-body">
-                                                        <canvas id="wanChart"></canvas>
+                                                        <canvas id="diskChart"></canvas>
                                                     </div>
                                                 </div>
                                             </div>
@@ -220,7 +220,7 @@
         </div>
     </div>
 
-    <script src="../static/form.js"></script>
+    <script src="{{ url_for('static', filename='form.js') }}"></script>
 
 </body>
 

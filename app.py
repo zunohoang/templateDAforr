@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, send_from_directory
+import src.remote.restart as restart
 
 app = Flask(__name__, template_folder='template')
 
@@ -26,6 +27,13 @@ def details():
 @app.route('/src/data/<path:path>', methods=['GET'])
 def get_data(path):
     return send_from_directory('src/data', path)
+
+
+# Reset
+@app.route('/src/remote/restart.py', methods=['PUT'])
+def restart():
+    # restart.restart_vm_by_id(request.json['id'], request.json['room'])
+    return 'Restarted'
 
 
 if __name__ == '__main__':
