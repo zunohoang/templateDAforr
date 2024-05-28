@@ -8,11 +8,9 @@ app = Flask(__name__, template_folder='template')
 def index():
     return render_template('scanner.html')
 
-
 @app.route('/forms')
 def forms():
     return render_template('forms.html')
-
 
 @app.route('/manager')
 def manager():
@@ -32,8 +30,7 @@ def get_data(path):
 # Reset
 @app.route('/src/remote/restart.py', methods=['PUT'])
 def restart():
-    # restart.restart_vm_by_id(request.json['id'], request.json['room'])
-    return 'Restarted'
+    restart.restart_vm_by_id(request.json['id'], request.json['room'])
 
 
 if __name__ == '__main__':

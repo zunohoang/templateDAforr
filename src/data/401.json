@@ -7,9 +7,9 @@
     "status": "Shutdown",
     "ip": "192.168.1.199",
     "os": "Windows 10",
-    "cpu": "2",
-    "memory": "4GB",
-    "disk": "60GB",
+    "cpu": "5",
+    "memory": "10GB",
+    "disk": "56GB",
     "network": "NAT"
   },
   {

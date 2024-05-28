@@ -97,22 +97,12 @@
                                 <div class="bg-gray-200 px-2 py-3 border-solid border-gray-300 border-b">
                                     ROOM
                                 </div>
-                                <div class="p-3">
-                                    <button
-                                        class="bg-transparent hover:bg-blue-500 text-blue-dark font-semibold hover:text-white py-2 px-4 border border-blue hover:border-transparent rounded room-button">
-                                        404
-                                    </button>
-                                    <button
-                                        class="bg-transparent hover:bg-green-500 text-green-dark font-semibold hover:text-white py-2 px-4 border border-green hover:border-transparent rounded room-button">
-                                        405
-                                    </button>
-                                    <button
-                                        class="bg-transparent hover:bg-orange-500 text-orange-dark-800 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded room-button">
-                                        406
-                                    </button>
+                                <div class="p-3" id="buttonRoom">
+
                                 </div>
-                                <button id="exportButton" class="bg-transparent hover:bg-blue-500 text-blue-dark font-semibold hover:text-white py-2 px-4 border border-blue hover:border-transparent rounded">Export to Excel</button>
-                        
+                                <div class="p-3">
+                                <button onclick="exportToExcel()" id="exportButton" class="bg-transparent hover:bg-blue-500 text-blue-dark font-semibold hover:text-white py-2 px-4 border border-blue hover:border-transparent rounded">Export to Excel</button>
+                                </div>
                             </div>
 
                             <div
@@ -126,21 +116,23 @@
 
                                             <div class="card-body">
                                                 <div class="container">
-                                                    <table class="table table-striped table-hover">
-                                                        <thead class="table-secondary">
-                                                            <tr>
-                                                                <th>Tên máy</th>
-                                                                <th>IP</th>
-                                                                <th>Hệ điều hành</th>
-                                                                <th>CPU</th>
-                                                                <th>RAM</th>
-                                                                <th>Disk</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="hardwareTableBody">
-                                                            <!-- Dữ liệu sẽ được thêm vào đây sau khi click vào button room -->
-                                                        </tbody>
-                                                    </table>
+                                                    <style>
+                                                    @media screen and (max-width: 600px) {
+                                                        .flex {
+                                                            display: block; /* Chuyển đổi sang kiểu block để các phần tử con xuống dòng */
+                                                        }
+                                                    }
+                                                </style>
+                                                <div class="flex">
+                                                    <div id="chartContainerOs" style="height: 200px; width: 100%;"></div>
+                                                    <div id="chartContainerCpu" style="height: 200px; width: 100%;"></div>
+                                                </div>
+                                                    <div class="flex">
+                                                    <div id="chartContainerMemory" style="height: 200px; width: 100%;"></div>
+                                                    <div id="chartContainerDisk" style="height: 200px; width: 100%;"></div>
+                                                    </div>
+                                                    <div id="chartContainerNetwork" style="height: 200px; width: 100%;"></div>
+                                                <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
                                                 </div>
                                             </div>
                                         </div>
@@ -151,42 +143,6 @@
 
                         </div>
 
-                        <div class="flex flex-1  flex-col md:flex-row lg:flex-row mx-2">
-
-                            <div
-                                class="mb-2 mx-2 border-solid border-gray-300 rounded border shadow-sm w-full md:w-1/2 lg:w-1/2">
-                                <div class="bg-gray-200 px-2 py-3 border-solid border-gray-300 border-b">
-                                    Thông tin chi tiết
-                                </div>
-                                <div class="p-3">
-                                    <div class="container">
-                                        <div class="card mt-2">
-
-                                            <div class="card-body">
-                                                <div class="container">
-                                                    <table class="table table-striped table-hover">
-                                                        <thead class="table-secondary">
-                                                            <tr>
-                                                                <th>Tên máy</th>
-                                                                <th>IP</th>
-                                                                <th>Hệ điều hành</th>
-                                                                <th>Network</th>
-                                                                <th>Tắt/bật</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="networkTableBody">
-                                                            <!-- Dữ liệu sẽ được thêm vào đây sau khi click vào button room -->
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                        </div>
 
                     </div>
 
@@ -198,8 +154,232 @@
 
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="../static/manager.js">
+    <script>
+            function capitalizeFirstLetter(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
 
+            var ipData = {
+                "404": [
+                    {
+                        ip: "192.168.1.10",
+                        os: "Win 10",
+                        cpuData: [10, 20, 30, 40, 50, 20, 30, 10, 40, 35, 15, 25, 50, 10],
+                        ramData: [5, 15, 25, 35, 45, 5, 10, 11, 20, 12, 35, 5, 11, 22],
+                        diskData: [8, 18, 28, 38, 48, 5, 4, 0, 1, 2, 4, 3, 5, 66],
+                        networkData: [12, 22, 32, 42, 52, 66, 44, 22, 11, 33, 11, 22, 10, 55]
+                    },
+                    {
+                        ip: "192.168.1.13",
+                        os: "Win 11",
+                        cpuData: [15, 25, 35, 45, 55, 25, 35, 15, 45, 30, 10, 20, 55, 15],
+                        ramData: [8, 18, 28, 38, 48, 8, 13, 14, 22, 15, 38, 8, 13, 25],
+                        diskData: [12, 22, 32, 42, 52, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+                        networkData: [18, 28, 38, 48, 58, 18, 25, 15, 9, 28, 15, 18, 10, 45]
+                    },
+                    {
+                        ip: "192.168.1.16",
+                        os: "Win 7",
+                        cpuData: [20, 30, 40, 50, 60, 30, 40, 20, 50, 40, 20, 30, 60, 20],
+                        ramData: [10, 20, 30, 40, 50, 10, 18, 20, 28, 30, 35, 10, 18, 30],
+                        diskData: [15, 25, 35, 45, 55, 15, 18, 20, 22, 24, 26, 28, 30, 32],
+                        networkData: [22, 32, 42, 52, 62, 22, 30, 25, 15, 32, 18, 22, 15, 55]
+                    }
+                ],
+                "405": [
+                    {
+                        ip: "192.168.1.11",
+                        os: "Ubuntu",
+                        cpuData: [12, 22, 32, 42, 52, 22, 32, 12, 42, 37, 17, 27, 52, 12],
+                        ramData: [6, 16, 26, 36, 46, 6, 11, 12, 22, 14, 37, 6, 11, 23],
+                        diskData: [9, 19, 29, 39, 49, 6, 5, 1, 2, 3, 5, 4, 6, 67],
+                        networkData: [14, 24, 34, 44, 54, 67, 45, 23, 12, 34, 12, 24, 11, 56]
+                    },
+                    {
+                        ip: "192.168.1.14",
+                        os: "Ubuntu",
+                        cpuData: [18, 28, 38, 48, 58, 28, 38, 18, 48, 38, 18, 28, 58, 18],
+                        ramData: [9, 19, 29, 39, 49, 9, 14, 15, 23, 16, 39, 9, 14, 26],
+                        diskData: [11, 21, 31, 41, 51, 9, 8, 2, 3, 4, 6, 5, 7, 68],
+                        networkData: [16, 26, 36, 46, 56, 68, 46, 24, 13, 36, 13, 26, 12, 57]
+                    },
+                    {
+                        ip: "192.168.1.17",
+                        os: "Ubuntu",
+                        cpuData: [22, 32, 42, 52, 62, 32, 42, 22, 52, 42, 22, 32, 62, 22],
+                        ramData: [11, 21, 31, 41, 51, 11, 18, 20, 28, 31, 36, 11, 18, 32],
+                        diskData: [13, 23, 33, 43, 53, 11, 10, 4, 5, 6, 8, 7, 9, 69],
+                        networkData: [18, 28, 38, 48, 58, 69, 47, 25, 14, 38, 14, 28, 13, 58]
+                    }
+                ],
+                "406": [
+                    {
+                        ip: "192.168.1.12",
+                        os: "Macbook",
+                        cpuData: [14, 24, 34, 44, 54, 24, 34, 14, 44, 34, 14, 24, 54, 14],
+                        ramData: [7, 17, 27, 37, 47, 7, 12, 13, 21, 17, 40, 7, 12, 24],
+                        diskData: [10, 20, 30, 40, 50, 7, 6, 2, 3, 4, 6, 5, 7, 70],
+                        networkData: [15, 25, 35, 45, 55, 70, 48, 26, 15, 35, 15, 25, 14, 59]
+                    },
+                    {
+                        ip: "192.168.1.15",
+                        os: "Macbook",
+                        cpuData: [16, 26, 36, 46, 56, 26, 36, 16, 46, 36, 16, 26, 56, 16],
+                        ramData: [8, 18, 28, 38, 48, 8, 15, 16, 24, 18, 41, 8, 15, 28],
+                        diskData: [11, 21, 31, 41, 51, 8, 7, 3, 4, 5, 7, 6, 8, 71],
+                        networkData: [16, 26, 36, 46, 56, 71, 49, 27, 16, 36, 16, 26, 15, 60]
+                    },
+                    {
+                        ip: "192.168.1.18",
+                        os: "Macbook",
+                        cpuData: [18, 28, 38, 48, 58, 28, 38, 18, 48, 38, 18, 28, 58, 18],
+                        ramData: [9, 19, 29, 39, 49, 9, 16, 18, 26, 29, 44, 9, 16, 30],
+                        diskData: [12, 22, 32, 42, 52, 9, 8, 4, 5, 6, 8, 7, 9, 72],
+                        networkData: [18, 28, 38, 48, 58, 72, 50, 28, 17, 38, 17, 28, 16, 61]
+                    }
+                ]
+            };
+
+            var deviceData = {};
+            loadData();
+
+            async function loadData() {
+                let buttonRoom = document.getElementById('buttonRoom');
+                for (let i = 1; i <= 3; i++) {
+                    buttonRoom.innerHTML += `<button onclick="veBieuDoPhong(40${i})"
+                                        class="m-1 bg-transparent hover:bg-blue-500 text-blue-dark font-semibold hover:text-red-500 hover:bg-black py-2 px-4 border border-blue hover:border-transparent rounded room-button">
+                                    40${i}
+                                </button>`;
+                    await fetch(`src/data/40${i}.json`)
+                        .then(response => response.json())
+                        .then(data => {
+                            deviceData[`40${i}`] = data;
+                        });
+                }
+                veBieuDoDefault();
+            }
+
+            function veBieuDoDefault() {
+                veBieuDoFull("os");
+                veBieuDoFull("cpu")
+                veBieuDoFull("memory")
+                veBieuDoFull("disk")
+                veBieuDoFull("network")
+            }
+
+            function veBieuDoFull(thongSo) {
+
+                var map = new Map();
+                for (let room in deviceData) {
+                    let devices = deviceData[room];
+                    for (let device of devices) {
+                        if (map.has(device[thongSo])) {
+                            map.set(device[thongSo], map.get(device[thongSo]) + 1);
+                        } else {
+                            map.set(device[thongSo], 1);
+                        }
+                    }
+                }
+
+                let dataPoints = [];
+                let sumData = 0;
+                for(let [key, value] of map) {
+                    sumData += value;
+                }
+                for (let [key, value] of map) {
+                    dataPoints.push({
+                        y: value * 100.0 / sumData,
+                        label: key
+                    });
+                }
+
+                var chart = new CanvasJS.Chart("chartContainer" + capitalizeFirstLetter(thongSo), {
+                    animationEnabled: true,
+                    title: {
+                        text: capitalizeFirstLetter(thongSo)
+                    },
+                    data: [{
+                        type: "pie",
+                        startAngle: 240,
+                        yValueFormatString: "##0.00\"%\"",
+                        indexLabel: "{label} {y}",
+                        dataPoints: dataPoints
+                    }]
+                });
+                chart.render();
+            }
+
+            function veBieuDoPhong(room) {
+                veBieuDo(room, "os");
+                veBieuDo(room, "cpu");
+                veBieuDo(room, "memory");
+                veBieuDo(room, "disk");
+                veBieuDo(room, "network");
+            }
+
+            function veBieuDo(room, nameProgram) {
+                let devices = deviceData[room];
+                var map = new Map();
+                for (let device of devices) {
+                    if (map.has(device[nameProgram])) {
+                        map.set(device[nameProgram], map.get(device[nameProgram]) + 1);
+                    } else {
+                        map.set(device[nameProgram], 1);
+                    }
+                }
+
+                var dataPoints = [];
+                var sumData = 0;
+                for(let [key, value] of map) {
+                    sumData += value;
+                }
+                for (let [key, value] of map) {
+                    dataPoints.push({
+                        y: value * 100.0 / sumData,
+                        label: key
+                    });
+                }
+
+                var chart = new CanvasJS.Chart("chartContainer" + capitalizeFirstLetter(nameProgram), {
+                    animationEnabled: true,
+                    title: {
+                        text: capitalizeFirstLetter(nameProgram)
+                    },
+                    data: [{
+                        type: "pie",
+                        startAngle: 240,
+                        yValueFormatString: "##0.00\"%\"",
+                        indexLabel: "{label} {y}",
+                        dataPoints: dataPoints
+                    }]
+                });
+                chart.render();
+            }
+
+            function exportToExcel() {
+                let data = deviceData;
+                var wb = XLSX.utils.book_new();
+
+                for (var sheetName in data) {
+                    var sheetData = data[sheetName];
+                    var ws_data = [];
+                    var headers = Object.keys(sheetData[0]);
+                    ws_data.push(headers);
+
+                    sheetData.forEach(function (row) {
+                        var rowData = [];
+                        headers.forEach(function (header) {
+                            rowData.push(row[header]);
+                        });
+                        ws_data.push(rowData);
+                    });
+
+                    var ws = XLSX.utils.aoa_to_sheet(ws_data);
+                    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+                }
+
+                XLSX.writeFile(wb, "data.xlsx");
+            }
     </script>
 </body>
 
